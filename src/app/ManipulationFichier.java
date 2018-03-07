@@ -23,7 +23,7 @@ class ManipulationFichier
     static HashMap<String,Integer> getMotOccurence(File file) throws SQLException
     {
         HashMap<String,Integer> motCompte = null;
-        String stopwords[]  = {"a", "as","and","is","to" };
+        String stopwords[]  = {"yes","no","than","all","as","not","here","without","they","be","are","by","off","do","while","wasn","those","your","when","can","why","who","have","with","also","it","was","her","us","you","didn","there","their","an","will","had","has","on","and","his","this","is","where","were","which","isn","did","ve","at","in","me","the","but","how","t","my","that","he","ll","about","he","what","or","of","then","next","after","for","before","to","i" };
 //conexion to database
         App app = new App();
         Connection conn = app.connect();
@@ -32,7 +32,7 @@ class ManipulationFichier
                 FileReader fileReader = new FileReader(file);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 motCompte = new HashMap<>();
-
+               
                 String line = null;
 
                 while ((line = bufferedReader.readLine()) != null) 
@@ -40,29 +40,22 @@ class ManipulationFichier
                     List<String> mots = Arrays.asList(line.split("\\W+"));
                                         
                     Iterator<String> it = mots.iterator();
-                    
                     while(it.hasNext())
                     {
                         String mot = it.next().toLowerCase();
-                   
+                        
+                        
+
 //stopwords function
                    // String request= "SELECT*FROM stopwords" ;
                    // Statement st1 = conn.createStatement();
                    // st1.execute(request);   
-                   
-                for(int j=0;j<=stopwords.length;j++){
-               {
-                if("mot"=="stopwords[j]")
-                            {
-                               motCompte.remove(j);
-                               mots.clear();
-                            }
-                            
-                          
-               }
+               // System.out.println(mot);   
+              
+             
                        
-                    System.out.println(mot+": "+motCompte.get(mot));
-                }
+                   // System.out.println(mot+": "/*+motCompte.get(mot)*/);
+                
                         String request= "INSERT INTO tab_mot (mot) VALUES ('"+mot+"')" ;
                         Statement st1 = conn.createStatement();
                         st1.execute(request);
@@ -79,6 +72,22 @@ class ManipulationFichier
                             {
                                 motCompte.put(mot,1);
                             }
+                              for(int j=0;j<stopwords.length;j++){
+               //System.out.println(stopwords[j]);
+                if(mot.equalsIgnoreCase(stopwords[j]))
+                            {
+                               motCompte.remove(stopwords[j]);
+                                   
+                             
+                               // motCompte.remove(motCompte.get(mot));
+                               
+                            }
+                            
+                            
+                            
+                          
+               }//System.out.println(motCompte);
+
                         }
 
                 }
