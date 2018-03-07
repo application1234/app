@@ -23,7 +23,7 @@ class ManipulationFichier
     static HashMap<String,Integer> getMotOccurence(File file) throws SQLException
     {
         HashMap<String,Integer> motCompte = null;
-        String stopwords[]  = {"yes","no","than","all","as","not","here","without","they","be","are","by","off","do","while","wasn","those","your","when","can","why","who","have","with","also","it","was","her","us","you","didn","there","their","an","will","had","has","on","and","his","this","is","where","were","which","isn","did","ve","at","in","me","the","but","how","t","my","that","he","ll","about","he","what","or","of","then","next","after","for","before","to","i" };
+        String stopwords[]  = {"yes","no","than","am","its","we","all","as","not","here","without","they","be","are","by","off","do","while","wasn","those","your","when","can","why","who","have","with","also","it","was","her","us","you","didn","there","their","an","will","had","has","on","and","his","this","is","where","were","which","isn","did","ve","at","in","me","the","but","how","t","my","that","he","ll","about","he","what","or","of","then","next","after","for","before","to","i" };
 //conexion to database
         App app = new App();
         Connection conn = app.connect();
