@@ -27,7 +27,7 @@ public class Pretraitement extends MainClass
 {
     static float comp;
     
-    static void proc(Object file, String lemma, String pos,float tf,int occurence) throws SQLException{
+    static void proc(String fileName,String lemma,String pos,float tff,int occurence) throws SQLException{
         
         if(globalCompteMot.keySet().contains(lemma))
         {
@@ -38,12 +38,11 @@ public class Pretraitement extends MainClass
             globalCompteMot.put(lemma,1);
         }
         
-      //  System.out.println(param1 + "\t" + param2 + "\t" + param3);
-//        String request= "INSERT INTO tab_mot (mot,pos,lemma,tf,occurence) VALUES ('"+param1+"','"+param2+"','"+param3+"',"+param4+","+param5+")" ;
-//        App app = new App();
-//        Connection conn = app.connect();
-//        Statement st1 = conn.createStatement();
-//                        st1.execute(request);
+        String request= "INSERT INTO tab_mot (radical,pos,occurence,tf,filename) VALUES ('"+lemma+"','"+pos+"','"+occurence+"','"+tff+"','"+fileName+"')" ;
+        App app = new App();
+        Connection conn = app.connect();
+        Statement st1 = conn.createStatement();
+                        st1.execute(request);
                         
     }
     
@@ -103,7 +102,7 @@ public class Pretraitement extends MainClass
                 
                 for(String mot : motCompte.keySet())
                {      
-                    int occurence,idd=0;
+                    int occurence;
                     float tff;
                         occurence =motCompte.get(mot);
                         tff= motCompte.get(mot)/Pretraitement.comp;
@@ -124,7 +123,7 @@ public class Pretraitement extends MainClass
                             {
                                try {
                                     System.out.println(file.getName()+":"+lemma+":"+pos+":"+tff+":"+occurence+":"+file.getParentFile().getName());
-                                    proc(file.getName(), pos,lemma,tff,occurence);
+                                    proc(file.getName(),lemma, pos,tff,occurence);
                                 } catch (SQLException ex) {
                                     Logger.getLogger(Pretraitement.class.getName()).log(Level.SEVERE, null, ex);
                                 }
@@ -134,15 +133,11 @@ public class Pretraitement extends MainClass
                     });
 
                     tt.process(asList( mot ));
-                    /* String request= "INSERT INTO tab_mot (tf,id,occurence) VALUES ("+tff+","+idd+","+occurence+")" ;
-                                     Statement st1 = conn.createStatement();
-                                     st1.execute(request);*/
-                    idd++;
+                   
+                    
     }
     finally {
     tt.destroy();
-     
-      // System.out.println(tokenn);
       
                     
     //inserer les fichier dans la bdd
@@ -167,8 +162,9 @@ public class Pretraitement extends MainClass
     {
         //parcourir la table dans la base de données (ligne par ligne) :
                     //-document -lemma -tf -occurence
+        
             
-        //Float tfidf = tf * Math.log(globalMotCompte.get(lemma)/occurence);
+     //  Float tfidf = tf * Math.log(globalCompteMot.get(lemma)/occurence);
         
         //insérer le tfidf du mot par rapport au document courant
                
