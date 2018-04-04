@@ -12,6 +12,8 @@ import java.util.List;
 import PostgreSQLJDBC.*;
 import java.sql.Connection;
 import java.io.File;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
 import static java.util.Arrays.asList;
@@ -122,7 +124,7 @@ public class Pretraitement extends MainClass
                             if(!lemma.equals("<unknown>"))
                             {
                                try {
-                                    System.out.println(file.getName()+":"+lemma+":"+pos+":"+tff+":"+occurence+":"+file.getParentFile().getName());
+                                  //  System.out.println(file.getName()+":"+lemma+":"+pos+":"+tff+":"+occurence+":"+file.getParentFile().getName());
                                     proc(file.getName(),lemma, pos,tff,occurence);
                                 } catch (SQLException ex) {
                                     Logger.getLogger(Pretraitement.class.getName()).log(Level.SEVERE, null, ex);
@@ -162,9 +164,57 @@ public class Pretraitement extends MainClass
     {
         //parcourir la table dans la base de données (ligne par ligne) :
                     //-document -lemma -tf -occurence
+    try {
+      
+        App app = new App();
+        Connection conn = app.connect();        
+      //Création d'un objet Statement
+      Statement state = conn.createStatement();
+      
+      //L'objet ResultSet contient le résultat de la requête SQL
+      ResultSet result = state.executeQuery("SELECT * FROM tab_mot");
+      //On récupère les MetaData
+      ResultSetMetaData resultMeta = result.getMetaData();
+         
+
+      while(result.next()){ int i=1;        
+       
+         String lemma=result.getObject(1).toString()  ;i++;
+         String pos=result.getObject(2).toString()  ;i++;
+         int occurence=result.getInt(3)  ;i++;
+         float tff=result.getFloat(4);
         
+        
+      
+       if(globalCompteMot.keySet().contains(lemma))
+        {
+            globalCompteMot.replace(lemma,globalCompteMot.get(lemma)+1);
+        }
+        else
+        {
+            globalCompteMot.put(lemma,1);
+        }
+        
+        
+        float tfidf = (float) (tff * Math.log(globalCompteMot.get(lemma)/occurence));
+        System.out.println(lemma+"occurence doc:"+globalCompteMot.get(lemma)+"\ttfidf\t"+tfidf);
+        String request= "INSERT INTO tab_mot (tfidf) VALUES ('"+tfidf+"')WHERE(lemma=='"+lemma+"')" ;
+       //
+       // Connection conn = app.connect();
+        Statement st1 = conn.createStatement();
+                        st1.execute(request);
+        //System.out.println("\n-lemma\n"+lemma+"\n-pos\n"+pos+"\n-occurence\n"+occurence+"..."+tff);
+      }
+
+      result.close();
+      state.close();
+         
+    } catch (Exception e) {
+      e.printStackTrace();
+    }      
+  
             
-     //  Float tfidf = tf * Math.log(globalCompteMot.get(lemma)/occurence);
+      
         
         //insérer le tfidf du mot par rapport au document courant
                
