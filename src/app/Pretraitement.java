@@ -198,8 +198,8 @@ public class Pretraitement extends MainClass
         
         float tfidf = (float) (tff * Math.log(globalCompteMot.get(lemma)/occurence));
         System.out.println(lemma+"occurence doc:"+globalCompteMot.get(lemma)+"\ttfidf\t"+tfidf);
-        String request= "INSERT INTO tab_mot (tfidf) VALUES ('"+tfidf+"')WHERE radical=('"+lemma+"')" ;
-       //
+        String request= "UPDATE  public.tab_mot SET tfidf=('"+tfidf+"') WHERE radical=('"+lemma+"')" ;
+       
        // Connection conn = app.connect();
         Statement st1 = conn.createStatement();
                         st1.execute(request);
